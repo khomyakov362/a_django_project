@@ -15,4 +15,4 @@ class Command(BaseCommand):
 
         admin_user.set_password('qwerty')
         admin_user.save()
-        return True
+        print('Admin created')
