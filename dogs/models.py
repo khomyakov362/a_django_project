@@ -16,7 +16,7 @@ class Breed(models.Model):
 class Dog(models.Model):
     name = models.CharField(max_length=150, verbose_name='dog_name')
     breed = models.ForeignKey(Breed, on_delete=models.CASCADE, verbose_name='breed')
-    photo = models.ImageField(upload_to='dogs/', **NULLABLE)
+    photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='image')
     birth_date = models.DateField(**NULLABLE, verbose_name='birth_date')
 
     def __str__(self):
