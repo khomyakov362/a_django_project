@@ -62,8 +62,17 @@ def dog_update(request : HttpRequest, pk : int):
             return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk : pk}))
     context = {
         'object' : dog_object, 
-        'form'   : DogForm.instance(dog_object)
+        'form'   : DogForm(instance=dog_object)
     }
     return render(request, 'dogs/update.html', context)
 
+def dog_delete(request : HttpRequest, pk : int):
+    dog_object = get_object_or_404(Dog, pk=pk)
+    if request.method == 'POST':
+        dog_object.delete()
+        return HttpResponseRedirect(reverse('dogs:dogs_list'))
+    context = {
+        'object' : dog_object
+    }
+    return render(request, 'dogs/delete.html', context)
 
