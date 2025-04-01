@@ -31,7 +31,7 @@ def breed_dogs_list(request : HttpRequest, pk : int):
 
 def dogs_list(request : HttpRequest):
     context = {
-        'objects' : Dog.objects.all(),
+        'objects_list' : Dog.objects.all(),
         'title' : 'Shelter - All Our Dogs'
     }
     return render(request, 'dogs/dogs.html', context)

@@ -1,11 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends 'dogs/base.html' %}
+{% load my_tags %}
+{% block content %}
+
+<div class="row">
+    {% for object in objects_list %}
+    <div class="col-md-6">
+        <div class="card mb-4 box-shadow">
+            <img class="card-img-top" src="{{ object.photo|dogs_media }}" width="300" height="320" alt="Card image cap">
+            <div class="card-body">
+                <p class="card-text">
+                    {{ object.name|title }}
+                </p>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-link" href="{% url 'dogs:dog_detail' object.pk %}">More infirmation</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

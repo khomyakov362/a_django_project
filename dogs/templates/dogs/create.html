@@ -1,7 +1,7 @@
 {% extends 'dogs/base.html' %}
 
 {% block content %}
-<form action="post" enctype="multipart/form-data" class="row">
+<form method="post" enctype="multipart/form-data" class="row">
     <div class="col-6">
         <div class="card">
             <div class="card-header">
@@ -13,7 +13,7 @@
             </div>
             <div class="card-body">
                 {% csrf_token %}
-                {{form.as_p}}
+                {{ form.as_p }}
                 <button type="submit" class="btn btn-outline-success">
                     {% if object %}
                         Save
