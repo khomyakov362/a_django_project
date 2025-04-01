@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponseRedirect
 from django.urls import reverse
 
@@ -43,3 +43,27 @@ def dog_create(request : HttpRequest):
             form.save()
             return HttpResponseRedirect(reverse('dogs:dogs_list'))
     return render(request, 'dogs/create.html', {'form':DogForm()})
+
+def dog_view_details(request : HttpRequest, pk : int):
+    dog_object = Dog.objects.get(pk=pk)
+    context = {
+        'object' : Dog.objects.get(pk=pk),
+        'title'  : f'You chose {dog_object.name}. Breed: {dog_object.breed.name}.' 
+    }
+    return render(request, 'dog/detail.html', context=context)
+
+def dog_update(request : HttpRequest, pk : int):
+    dog_object = get_object_or_404(Dog, pk=pk)
+    if request.method == 'POST':
+        form = DogForm(request.POST, request.FILES, instance=dog_object)
+        if form.is_valid():
+            dog_object = form.save()
+            dog_object.save()
+            return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk : pk}))
+    context = {
+        'object' : dog_object, 
+        'form'   : DogForm.instance(dog_object)
+    }
+    return render(request, 'dogs/update.html', context)
+
+

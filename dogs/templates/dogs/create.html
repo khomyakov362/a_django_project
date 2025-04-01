@@ -1,11 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends 'dogs/base.html' %}
+
+{% block content %}
+<form action="post" enctype="multipart/form-data" class="row">
+    <div class="col-6">
+        <div class="card">
+            <div class="card-header">
+                {% if object %}
+                    Edit dog
+                {% else %}
+                    Add dog
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% csfr_token %}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-outline-success">
+                    {% if object %}
+                        Save
+                    {% else %}
+                        Add
+                    {% endif %}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}
