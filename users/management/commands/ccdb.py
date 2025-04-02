@@ -5,7 +5,7 @@ from config.settings import USER, PASSWORD, HOST, DRIVER, PAD_DATABASE, DATABASE
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        connection_string = f'''DRIVER={DRIVER};SERVER={HOST};DATABSE={PAD_DATABASE};UID={USER};PWD{PASSWORD}'''
+        connection_string = f'''DRIVER={DRIVER};SERVER={HOST};DATABASE={PAD_DATABASE};UID={USER};PWD{PASSWORD}'''
     
         try:
             conn = pyodbc.connect(connection_string)
