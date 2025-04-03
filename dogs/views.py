@@ -42,15 +42,15 @@ def dog_create(request : HttpRequest):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('dogs:dogs_list'))
-    return render(request, 'dogs/create.html', {'form':DogForm()})
+    return render(request, 'dogs/create_update.html', {'form':DogForm()})
 
 def dog_view_details(request : HttpRequest, pk : int):
     dog_object = Dog.objects.get(pk=pk)
     context = {
         'object' : Dog.objects.get(pk=pk),
-        'title'  : f'You chose {dog_object.name}. Breed: {dog_object.breed.name}.' 
+        'title'  : f'You chose {dog_object.name}.\nBreed: {dog_object.breed.name}.' 
     }
-    return render(request, 'dog/detail.html', context=context)
+    return render(request, 'dogs/detail.html', context=context)
 
 def dog_update(request : HttpRequest, pk : int):
     dog_object = get_object_or_404(Dog, pk=pk)
@@ -64,7 +64,7 @@ def dog_update(request : HttpRequest, pk : int):
         'object' : dog_object, 
         'form'   : DogForm(instance=dog_object)
     }
-    return render(request, 'dogs/update.html', context)
+    return render(request, 'dogs/create_update.html', context)
 
 def dog_delete(request : HttpRequest, pk : int):
     dog_object = get_object_or_404(Dog, pk=pk)
