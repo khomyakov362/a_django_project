@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -48,4 +48,8 @@ def user_profile(request : HttpRequest):
 
     }
     return render(request, 'users/user_profile_read_only.html', context)
+
+def user_logout(request : HttpRequest):
+    logout(request)
+    return redirect('dogs:index')
 
