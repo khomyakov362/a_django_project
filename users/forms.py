@@ -2,7 +2,13 @@ from django import forms
 
 from users.models import User
 
-class UserRegisterForm(forms.ModelForm):
+class StyleFromMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+class UserRegisterForm(StyleFromMixin, forms.ModelForm):
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repeat the password', widget=forms.PasswordInput)
 

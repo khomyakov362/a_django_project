@@ -9,11 +9,13 @@
             <div class="card-header">My profile</div>
             <img class="card-img-top" src="{{ user.avatar|user_media }}" alt="Card image cap" width="300" height="320">
             <div class="card-body">
-                <span class="card-text">Email: {{ user.email }}</span>
-                <span class="card-text">First Name: {{ user.first_name|default:"Not stated" }}</span>
-                <span class="card-text">Last Name: {{ user.last_name|default:"Not stated" }}</span>
-                <span class="card-text">Phone: {{ user.phone|default:"Not stated" }}</span>
-                <span class="card-text">Telegram: {{ user.telegram|default:"Not stated" }}</span>
+                <ul class="container card-text list-group-flush">
+                <li class="list-group-item">Email: {{ user.email }}</li>
+                <li class="list-group-item">First Name: {{ user.first_name|default:"Not stated" }}</li>
+                <li class="list-group-item">Last Name: {{ user.last_name|default:"Not stated" }}</li>
+                <li class="list-group-item">Phone: {{ user.phone|default:"Not stated" }}</li>
+                <li class="list-group-item">Telegram: {{ user.telegram|default:"Not stated" }}</li>
+                </ul>
                 <button class="btn btn-outline-warning">
                     <a class="btn btn-link" href="{% url 'users:user_profile' %}">Update</a>
                 </button>

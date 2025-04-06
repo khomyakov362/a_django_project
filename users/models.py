@@ -5,11 +5,11 @@ NULLABLE = {'blank' : True, 'null' : True}
 
 class User(AbstractUser):
     username = None
-    email = models.EmailField(verbose_name='email', unique=True)
-    first_name = models.CharField(max_length=150, verbose_name='first name', default='Anonymous')
-    last_name = models.CharField(max_length=150, verbose_name='last name', default='Anonymous')
-    phone = models.CharField(max_length=35, verbose_name='phone number', **NULLABLE)
-    telegram = models.CharField(max_length=150, verbose_name='telegram username', **NULLABLE)
+    email = models.EmailField(verbose_name='Email', unique=True)
+    first_name = models.CharField(max_length=150, verbose_name='First name', default='Anonymous')
+    last_name = models.CharField(max_length=150, verbose_name='Last Name', default='Anonymous')
+    phone = models.CharField(max_length=35, verbose_name='Phone Number', **NULLABLE)
+    telegram = models.CharField(max_length=150, verbose_name='Telegram Username', **NULLABLE)
     avatar = models.ImageField(upload_to='users/', **NULLABLE)
     is_active = models.BooleanField(default=True, verbose_name='active')
 

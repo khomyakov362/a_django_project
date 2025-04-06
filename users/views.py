@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from users.forms import UserRegisterForm, UserLoginForm, UserForm
 
 def user_register(request : HttpRequest):
@@ -37,6 +38,7 @@ def user_login(request : HttpRequest):
     }
     return render(request, 'users/user_login.html', context=context)
 
+@login_required
 def user_profile(request : HttpRequest):
     user_object = request.user
     if user_object.first_name:

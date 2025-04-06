@@ -14,10 +14,10 @@ class Breed(models.Model):
         verbose_name_plural = 'breed'
 
 class Dog(models.Model):
-    name = models.CharField(max_length=150, verbose_name='dog_name')
-    breed = models.ForeignKey(Breed, on_delete=models.CASCADE, verbose_name='breed')
-    photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='image')
-    birth_date = models.DateField(**NULLABLE, verbose_name='birth_date')
+    name = models.CharField(max_length=150, verbose_name='Name')
+    breed = models.ForeignKey(Breed, on_delete=models.CASCADE, verbose_name='Breed')
+    photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='Photo')
+    birth_date = models.DateField(**NULLABLE, verbose_name='Birth date')
 
     def __str__(self):
         return f'{self.name} ({self.breed})'
