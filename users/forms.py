@@ -26,7 +26,7 @@ class UserRegisterForm(StyleFormMixin, forms.ModelForm):
             raise forms.ValidationError('The passwords do not match.', code='invalid')
         return cd['password']
 
-class UserLoginForm(forms.Form):
+class UserLoginForm(StyleFormMixin,forms.Form):
     email = forms.EmailField()
     password = forms.CharField(label='Password', widget=forms.PasswordInput)
 

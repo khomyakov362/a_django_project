@@ -6,8 +6,12 @@
     <div class="card mb-4 box-shadow">
         <img class="card-img-top" src="{{ object.photo|dogs_media }}" width="300" height="320" alt="Card image cap">
         <div class="card-body">
-            <p class="card-text">{{ object.name|title }}</p>
-            <span class="text-muted">{{ object.birth_date|default:"-" }}</span>
+            <p class="card-text">Name: {{ object.name|title }}</p>
+            <p class="text-muted">Birth date: {{ object.birth_date|default:"-" }}</p>
+            <p class="text-muted">Owner: {{ object.owner|default:"No owner" }}</p>
+            <p class="text-muted">{{ object.owner.first_name|default:"-" }}</p>
+            <p class="text-muted">Phone: {{ object.owner.phone|default:"-" }}</p>
+            <p class="text-muted">Telegram: {{ object.owner.telegram|default:"-" }}</p>
         </div>
         <div class="card-footer">
             <a class="btn btn-link" href="{% url 'dogs:dog_update' object.pk %}">Update</a>
