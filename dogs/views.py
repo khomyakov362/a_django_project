@@ -37,11 +37,14 @@ def dogs_list(request : HttpRequest):
     }
     return render(request, 'dogs/dogs.html', context)
 
+@login_required
 def dog_create(request : HttpRequest):
     if request.method == 'POST':
         form = DogForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            dog_object = form.save(commit=False)
+            dog_object.owner = request.user
+            dog_object.save()
             return HttpResponseRedirect(reverse('dogs:dogs_list'))
     return render(request, 'dogs/create_update.html', {'form':DogForm()})
 
@@ -53,6 +56,7 @@ def dog_view_details(request : HttpRequest, pk : int):
     }
     return render(request, 'dogs/detail.html', context=context)
 
+@login_required
 def dog_update(request : HttpRequest, pk : int):
     dog_object = get_object_or_404(Dog, pk=pk)
     if request.method == 'POST':
