@@ -3,11 +3,12 @@ from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm
 
 def user_register(request : HttpRequest):
+    form = UserRegisterForm(request.POST)
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
         if form.is_valid():
             new_user = form.save(commit=False)
             new_user.set_password(form.cleaned_data['password'])
@@ -15,7 +16,7 @@ def user_register(request : HttpRequest):
             return HttpResponseRedirect(reverse('users:user_login'))
     context = {
         'title' : 'Create new account',
-        'form' : UserRegisterForm
+        'form' : form
     }
     return render(request, 'users/user_register.html', context=context)
 

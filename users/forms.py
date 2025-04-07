@@ -22,7 +22,7 @@ class UserRegisterForm(StyleFormMixin, forms.ModelForm):
         validate_password(cd['password'])
         if cd['password'] != cd['password2']:
             print('The passwords do not match.')
-            raise forms.ValidationError('The passwords do not match.')
+            raise forms.ValidationError('The passwords do not match.', code='invalid')
         return cd['password']
 
 class UserLoginForm(forms.Form):
