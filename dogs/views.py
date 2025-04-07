@@ -39,14 +39,14 @@ def dogs_list(request : HttpRequest):
 
 @login_required
 def dog_create(request : HttpRequest):
+    form = DogForm(request.POST, request.FILES)
     if request.method == 'POST':
-        form = DogForm(request.POST, request.FILES)
         if form.is_valid():
             dog_object = form.save(commit=False)
             dog_object.owner = request.user
             dog_object.save()
             return HttpResponseRedirect(reverse('dogs:dogs_list'))
-    return render(request, 'dogs/create_update.html', {'form':DogForm()})
+    return render(request, 'dogs/create_update.html', {'form':DogForm})
 
 def dog_view_details(request : HttpRequest, pk : int):
     dog_object = Dog.objects.get(pk=pk)
