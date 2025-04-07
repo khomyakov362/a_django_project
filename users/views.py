@@ -1,10 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm
+from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserChangePasswordForm
 
 def user_register(request : HttpRequest):
     form = UserRegisterForm(request.POST)
@@ -70,4 +70,22 @@ def user_update(request : HttpRequest):
 def user_logout(request : HttpRequest):
     logout(request)
     return redirect('dogs:index')
+
+@login_required
+def change_user_password(request : HttpRequest):
+    user_object = request.user
+    form = UserChangePasswordForm(user_object, request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            user_object = form.save()
+            update_session_auth_hash(request, user_object)
+            messages.success(request, 'The password has been successfully changed.')
+            return HttpResponseRedirect(reverse('users:user_profile'))
+        else:
+            messages.error(request, 'The password could not be changed.')
+    context = {
+        'form' : form,
+    }
+    return render(request, 'users/user_change_password.html', context)
+
 
