@@ -1,10 +1,15 @@
+import string
+from random import sample
+
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserChangePasswordForm
+from users.services import send_register_email, send_new_password
 
 def user_register(request : HttpRequest):
     form = UserRegisterForm(request.POST)
@@ -13,6 +18,7 @@ def user_register(request : HttpRequest):
             new_user = form.save(commit=False)
             new_user.set_password(form.cleaned_data['password'])
             new_user.save()
+            send_register_email(new_user.email)
             return HttpResponseRedirect(reverse('users:user_login'))
     context = {
         'title' : 'Create new account',
@@ -88,4 +94,11 @@ def change_user_password(request : HttpRequest):
     }
     return render(request, 'users/user_change_password.html', context)
 
+@login_required
+def user_generate_new_password(request : HttpRequest):
+    new_password = ''.join(sample(string.ascii_letters + string.digits, 12))
+    request.user.set_password(new_password)
+    request.user.save()
+    send_new_password(request.user.email, new_password)
+    return redirect(reverse('dogs:index'))
 
