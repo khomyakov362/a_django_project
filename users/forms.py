@@ -11,20 +11,17 @@ class StyleFormMixin:
             field.widget.attrs['class'] = 'form-control'
 
 class UserRegisterForm(StyleFormMixin, forms.ModelForm):
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repeat the password', widget=forms.PasswordInput)
-
     class Meta:
         model = User
         fields = ('email',)
     
     def clean_password2(self):
         cd = self.cleaned_data
-        validate_password(cd['password'])
-        if cd['password'] != cd['password2']:
+        validate_password(cd['password1'])
+        if cd['password1'] != cd['password2']:
             print('The passwords do not match.')
-            raise forms.ValidationError('The passwords do not match.', code='invalid')
-        return cd['password']
+            raise forms.ValidationError('The passwords don\'t match.', code='invalid')
+        return cd['password2']
 
 class UserLoginForm(StyleFormMixin,forms.Form):
     email = forms.EmailField()
