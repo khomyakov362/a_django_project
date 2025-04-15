@@ -3,7 +3,7 @@ from random import sample
 
 from django.shortcuts import render, redirect
 from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
@@ -14,21 +14,11 @@ from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserChangePasswordForm
 from users.services import send_register_email, send_new_password
 
-
-def user_register(request : HttpRequest):
-    form = UserRegisterForm(request.POST)
-    if request.method == 'POST':
-        if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data['password'])
-            new_user.save()
-            send_register_email(new_user.email)
-            return HttpResponseRedirect(reverse('users:user_login'))
-    context = {
-        'title' : 'Create new account',
-        'form' : form
-    }
-    return render(request, 'users/user_register.html', context=context)
+class UserRegisterView(CreateView):
+    model = User
+    form_class = UserRegisterForm
+    success_url = reverse_lazy('users:user_login')
+    template_name = 'users/user_register.html'
 
 def user_login(request : HttpRequest):
     if request.method == 'POST':

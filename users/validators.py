@@ -17,8 +17,10 @@ def validate_password(field):
         }
     ]
     if not 8 <= len(field) <= 16:
+        print(error_messages[1][language])
+        print(field)
+        print(len(field))
+        raise ValidationError(error_messages[1][language], code=error_messages[1][language])
+    if not bool(re.match(pattern, field)):
         print(error_messages[0][language])
         raise ValidationError(error_messages[0][language], code=error_messages[0][language])
-    if not bool(re.match(pattern, field)):
-        print(error_messages[1][language])
-        raise ValidationError(error_messages[1][language], code=error_messages[1][language])
