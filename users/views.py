@@ -6,10 +6,14 @@ from django.http import HttpRequest, HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib import messages
+from django.views.generic import CreateView, UpdateView
 
+from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserChangePasswordForm
 from users.services import send_register_email, send_new_password
+
 
 def user_register(request : HttpRequest):
     form = UserRegisterForm(request.POST)

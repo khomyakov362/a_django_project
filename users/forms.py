@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
 
 from users.models import User
 from users.validators import validate_password
@@ -10,7 +10,7 @@ class StyleFormMixin:
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
 
-class UserRegisterForm(StyleFormMixin, forms.ModelForm):
+class UserRegisterForm(StyleFormMixin, UserCreationForm):
     class Meta:
         model = User
         fields = ('email',)
