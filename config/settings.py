@@ -153,6 +153,7 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_REDIRECT_URL = 'dogs:index'
 LOGOUT_REDIRECT_URL = 'dogs:index'
 LOGIN_URL = '/users/'
+LOGOUT_URL = '/users/logout/'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.yandex.com'

@@ -32,9 +32,15 @@
                         <li><a href="{% url 'dogs:dog_create' %}" class="text-white">Add a dog</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'users:user_profile' %}" class="text-white">Profile</a></li>
-                            <li><a href="{% url 'users:user_logout' %}" class="text-white">Sign out</a></li>
+                            <li><span class="text-white"> {{user}} </span></li>
+                            <li>
+                                <form method="post" action="{% url 'users:user_logout' %}">
+                                 {% csrf_token %}
+                                 <button type="submit" class="btn btn-danger btn-sm">Sign Out</button> 
+                                </form>
+                            </li>
                         {% else %}
-                            <li><a href="{% url 'users:user_login' %}" class="text-white">Sign in</a></li>
+                            <li><a href="{% url 'users:user_login' %}" class="text-white">Sign In</a></li>
                             <li><a href="{% url 'users:user_register' %}" class="text-white">Register</a></li>
                         {% endif %}
                     </ul>

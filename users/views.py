@@ -53,9 +53,8 @@ class UserUpdateView(UpdateView):
     def get_object(self, queryset = None):
         return self.request.user
 
-def user_logout(request : HttpRequest):
-    logout(request)
-    return redirect('dogs:index')
+class UserLogoutView(LogoutView):
+    pass
 
 class UserPasswordChangeView(PasswordChangeView):
     form_class = UserPasswordChangeForm
