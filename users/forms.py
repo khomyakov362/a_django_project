@@ -26,10 +26,10 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
 class UserLoginForm(StyleFormMixin, AuthenticationForm):
     pass
 
-class UserForm(forms.Form):
+class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone',)
+        fields = ('email', 'first_name', 'last_name', 'phone', 'avatar')
 
 class UserUpdateForm(StyleFormMixin, forms.ModelForm):
     class Meta:

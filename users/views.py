@@ -30,19 +30,16 @@ class UserLoginView(LoginView):
         'title' : 'Sign in'
     }
 
-
-@login_required
-def user_profile(request : HttpRequest):
-    user_object = request.user
-    if user_object.first_name:
-        user_name = user_object.first_name + " " + user_object.last_name
-    else:
-        user_name = 'Anonymous'
-    context = {
-        'title' : f'Your profile {user_name}'
-
+class UserProfileView(UpdateView):
+    model = User
+    form_class = UserForm
+    template_name = 'users/user_profile_read_only.html'
+    extra_context = {
+        'title' : 'Your profile'
     }
-    return render(request, 'users/user_profile_read_only.html', context)
+
+    def get_object(self, queryset = None):
+        return self.request.user
 
 @login_required
 def user_update(request : HttpRequest):
