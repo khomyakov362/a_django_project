@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.views.generic import CreateView, UpdateView
 
 from users.models import User
-from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserChangePasswordForm
+from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserPasswordChangeForm
 from users.services import send_register_email, send_new_password
 
 class UserRegisterView(CreateView):
@@ -35,47 +35,32 @@ class UserProfileView(UpdateView):
     form_class = UserForm
     template_name = 'users/user_profile_read_only.html'
     extra_context = {
-        'title' : 'Your profile'
+        'title' : 'Your Profile'
     }
 
     def get_object(self, queryset = None):
         return self.request.user
 
-@login_required
-def user_update(request : HttpRequest):
-    user_object = request.user
-    if request.method == 'POST':
-        form = UserUpdateForm(request.POST, request.FILES, instance=user_object)
-        if form.is_valid():
-            user_object.save()
-            return HttpResponseRedirect(reverse('users:user_profile'))
-    context = {
-        'object' : user_object,
-        'title' : f'Change profile {user_object.first_name + " " + user_object.last_name}',
-        'form' : UserUpdateForm(instance=user_object)
+class UserUpdateView(UpdateView):
+    model = User
+    form_class = UserUpdateForm
+    template_name = 'users/user_update.html'
+    success_url = reverse_lazy('users:user_profile')
+    extra_context = {
+        'title' : 'Update Profile'
     }
-    return render(request, 'users/user_update.html', context)
+
+    def get_object(self, queryset = None):
+        return self.request.user
 
 def user_logout(request : HttpRequest):
     logout(request)
     return redirect('dogs:index')
 
-@login_required
-def change_user_password(request : HttpRequest):
-    user_object = request.user
-    form = UserChangePasswordForm(user_object, request.POST)
-    if request.method == 'POST':
-        if form.is_valid():
-            user_object = form.save()
-            update_session_auth_hash(request, user_object)
-            messages.success(request, 'The password has been successfully changed.')
-            return HttpResponseRedirect(reverse('users:user_profile'))
-        else:
-            messages.error(request, 'The password could not be changed.')
-    context = {
-        'form' : form,
-    }
-    return render(request, 'users/user_change_password.html', context)
+class UserPasswordChangeView(PasswordChangeView):
+    form_class = UserPasswordChangeForm
+    template_name = 'users/user_change_password.html'
+    success_url = reverse_lazy('users:user_profile')
 
 @login_required
 def user_generate_new_password(request : HttpRequest):
