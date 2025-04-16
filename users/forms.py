@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm
+from django.contrib.auth.forms import PasswordChangeForm, UserCreationForm, AuthenticationForm
 
 from users.models import User
 from users.validators import validate_password
@@ -23,9 +23,8 @@ class UserRegisterForm(StyleFormMixin, UserCreationForm):
             raise forms.ValidationError('The passwords don\'t match.', code='invalid')
         return cd['password2']
 
-class UserLoginForm(StyleFormMixin,forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(label='Password', widget=forms.PasswordInput)
+class UserLoginForm(StyleFormMixin, AuthenticationForm):
+    pass
 
 class UserForm(forms.Form):
     class Meta:

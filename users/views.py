@@ -19,25 +19,17 @@ class UserRegisterView(CreateView):
     form_class = UserRegisterForm
     success_url = reverse_lazy('users:user_login')
     template_name = 'users/user_register.html'
-
-def user_login(request : HttpRequest):
-    if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            user = authenticate(email=cd['email'], password=cd['password'])
-            if user is None:
-                return HttpResponse('No such account exists.')
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('dogs:index'))
-            else:
-                return HttpResponse('The account is inactive.')
-    context = {
-        'title' : 'Sign In',
-        'form'  : UserLoginForm
+    extra_context = {
+        'title' : 'User registration'
     }
-    return render(request, 'users/user_login.html', context=context)
+
+class UserLoginView(LoginView):
+    template_name = 'users/user_login.html' 
+    form_class = UserLoginForm
+    extra_context = {
+        'title' : 'Sign in'
+    }
+
 
 @login_required
 def user_profile(request : HttpRequest):
