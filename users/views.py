@@ -23,6 +23,11 @@ class UserRegisterView(CreateView):
         'title' : 'User registration'
     }
 
+    def form_valid(self, form):
+        self.object = form.save()
+        send_register_email(self.object.email)
+        return super().form_valid(form)
+
 class UserLoginView(LoginView):
     template_name = 'users/user_login.html' 
     form_class = UserLoginForm
