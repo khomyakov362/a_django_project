@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpRequest, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from dogs.models import Breed, Dog
 from dogs.forms import DogForm
@@ -30,55 +31,45 @@ def breed_dogs_list(request : HttpRequest, pk : int):
     }
     return render(request, 'dogs/dogs.html', context)
 
-def dogs_list(request : HttpRequest):
-    context = {
-        'objects_list' : Dog.objects.all(),
+class DogListView(ListView):
+    model = Dog
+    extra_context = {
         'title' : 'Shelter - All Our Dogs'
     }
-    return render(request, 'dogs/dogs.html', context)
+    template_name = 'dogs/dogs.html' 
 
-@login_required
-def dog_create(request : HttpRequest):
-    form = DogForm(request.POST, request.FILES)
-    if request.method == 'POST':
-        if form.is_valid():
-            dog_object = form.save(commit=False)
-            dog_object.owner = request.user
-            dog_object.save()
-            return HttpResponseRedirect(reverse('dogs:dogs_list'))
-    return render(request, 'dogs/create_update.html', {'form':DogForm})
-
-def dog_view_details(request : HttpRequest, pk : int):
-    dog_object = Dog.objects.get(pk=pk)
-    context = {
-        'object' : Dog.objects.get(pk=pk),
-        'title'  : f'You chose {dog_object.name}.\nBreed: {dog_object.breed.name}.' 
+class DogCreateView(CreateView):
+    model = Dog
+    form_class = DogForm
+    template_name = 'dogs/create_update.html'
+    extra_context = {
+        'title' : 'Add a new dog'
     }
-    return render(request, 'dogs/detail.html', context=context)
+    success_url = reverse_lazy('dogs:dogs_list')
 
-@login_required
-def dog_update(request : HttpRequest, pk : int):
-    dog_object = get_object_or_404(Dog, pk=pk)
-    if request.method == 'POST':
-        form = DogForm(request.POST, request.FILES, instance=dog_object)
-        if form.is_valid():
-            dog_object = form.save()
-            dog_object.save()
-            return HttpResponseRedirect(reverse('dogs:dog_detail', args={pk : pk}))
-    context = {
-        'object' : dog_object, 
-        'form'   : DogForm(instance=dog_object)
+class DogDetailView(DetailView):
+    model = Dog
+    template_name = 'dogs/detail.html'
+    extra_context = {
+        'title' : 'Details'
     }
-    return render(request, 'dogs/create_update.html', context)
 
-@login_required
-def dog_delete(request : HttpRequest, pk : int):
-    dog_object = get_object_or_404(Dog, pk=pk)
-    if request.method == 'POST':
-        dog_object.delete()
-        return HttpResponseRedirect(reverse('dogs:dogs_list'))
-    context = {
-        'object' : dog_object
+class DogUpdateView(UpdateView):
+    model = Dog
+    form_class = DogForm
+    template_name = 'dogs/create_update.html'
+    extra_context = {
+        'title' : 'Edit information about the dog'
     }
-    return render(request, 'dogs/delete.html', context)
 
+    def get_success_url(self):
+        return reverse('dogs:dog_detail', args=[self.kwargs.get('pk')])
+
+class DogDeleteView(DeleteView):
+    model = Dog
+    template_name = 'dogs/delete.html'
+    extra_context = {
+        'title' : 'Delete dog'
+    }
+    success_url = reverse_lazy('dogs:dogs_list')
+    
