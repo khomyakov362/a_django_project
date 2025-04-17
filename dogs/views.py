@@ -1,11 +1,12 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpRequest, HttpResponseRedirect, Http404
+from django.http import HttpRequest, Http404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.forms import inlineformset_factory
 
-from dogs.models import Breed, Dog
-from dogs.forms import DogForm
+from dogs.models import Breed, Dog, DogParent
+from dogs.forms import DogForm, ParentForm
 
 def index(request : HttpRequest):
     context = {
@@ -76,6 +77,26 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
         if self.object.owner != self.request.user and not self.request.user.is_staff:
             raise Http404
         return self.object
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        ParentFormSet = inlineformset_factory(Dog, DogParent, form=ParentForm, extra=1)
+        if self.request.method == 'POST':
+            formset = ParentFormSet(self.request.POST, instance=self.object)
+        else:
+            formset = ParentFormSet(instance=self.object)
+        context_data['formset'] = formset
+        return context_data
+    
+    def form_valid(self, form):
+        context_data = self.get_context_data()
+        formset = context_data['formset']
+        self.object = form.save(commit=False)
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
 
 class DogDeleteView(LoginRequiredMixin, DeleteView):
     model = Dog
