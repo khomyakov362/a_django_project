@@ -20,6 +20,7 @@ class Dog(models.Model):
     photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='Photo')
     birth_date = models.DateField(**NULLABLE, verbose_name='Birth date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Owner')
+    is_active = models.BooleanField(default=True, verbose_name='Active')
 
     def __str__(self):
         return f'{self.name} ({self.breed})'

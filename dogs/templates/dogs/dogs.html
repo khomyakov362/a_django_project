@@ -2,22 +2,14 @@
 {% load my_tags %}
 {% block content %}
 
-<div class="row">
-    {% for object in object_list %}
-    <div class="col-md-6">
-        <div class="card mb-4 box-shadow">
-            <img class="card-img-top" src="{{ object.photo|dogs_media }}" width="300" height="320" alt="Card image cap">
-            <div class="card-body">
-                <p class="card-text">
-                    {{ object.name|title }}
-                </p>
-            </div>
-            <div class="card-footer">
-                <a class="btn btn-link" href="{% url 'dogs:dog_detail' object.pk %}">More infirmation</a>
-            </div>
-        </div>
+<div class="container">
+    <div class="row">
+        {% for object in object_list %}
+        {% include 'dogs/includes/inc_dog_card.html' with object=object %}
+        {% endfor %}
     </div>
-    {% endfor %}
+    <a class="btn btn-outline-success m-2" href="{% url 'dogs:dogs_list' %}">Active dogs</a>
+    <a class="btn btn-outline-secondary m-2" href="{% url 'dogs:dogs_deactivated_list' %}">Non-Active dogs</a>
 </div>
 
 {% endblock %}

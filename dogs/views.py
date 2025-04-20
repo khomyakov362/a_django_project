@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpRequest, Http404
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +7,7 @@ from django.forms import inlineformset_factory
 
 from dogs.models import Breed, Dog, DogParent
 from dogs.forms import DogForm, ParentForm
+from users.models import UserRoles
 
 def index(request : HttpRequest):
     context = {
@@ -44,6 +45,25 @@ class DogListView(ListView):
         'title' : 'Shelter - All Our Dogs'
     }
     template_name = 'dogs/dogs.html' 
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset.filter(is_active=True)
+
+class DogDeactivatedListView(LoginRequiredMixin, ListView):
+    model = Dog
+    extra_context = {
+        'title' : 'All Non-Active Dogs'
+    }
+    template_name = 'dogs/dogs.html'
+
+    def get_queryset(self): 
+        if self.request.user.role in (UserRoles.MODERATOR, UserRoles.ADMIN):
+            return super().get_queryset().filter(is_active=False)
+        elif self.request.user.role == UserRoles.USER:
+            return super().get_queryset().filter(is_active=False, owner=self.request.user)
+        else:
+            return super().get_queryset()
 
 class DogCreateView(LoginRequiredMixin, CreateView):
     model = Dog
@@ -119,4 +139,9 @@ class DogDeleteView(LoginRequiredMixin, DeleteView):
         if self.object.owner != self.request.user and not self.request.user.is_staff:
             raise Http404
         return self.object
-    
+
+def toggle_activity(request : HttpRequest, pk : int):
+    dog_item = get_object_or_404(Dog, pk=pk)
+    dog_item.is_active = not dog_item.is_active
+    dog_item.save()
+    return redirect(reverse('dogs:dogs_list'))

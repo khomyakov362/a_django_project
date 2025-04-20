@@ -1,0 +1,25 @@
+{% load my_tags %}
+<div class="col-4">
+    <div class="card mb-4 box-shadow">
+        <div class="card-header">
+            <h4 class="my-0 font-wetght-normal">{{ object.name }}</h4>
+        </div>
+        <img class="card-img-top" src="{{ object.photo|dogs_media }}" alt="Image cap" width="300" height="300">
+        <div class="card-body">
+            <h5 class="card-title pricing-card-title">Breed: {{ object.breed }}</h5>
+            <ul class="list-unstyled mb-4 text-start m-3">
+                <li>Birth Date: {{object.birt_hdate|default:'not stated'}} </li>
+            </ul>
+        </div>
+        <a class="btn btn-lg btn-block btn-outline-info" href="{% url 'dogs:dog_detail' object.pk %}">Details</a>
+        {% if user.is_authenticated and object.owner == user or user.is_staff %}
+        <a class="btn btn-lg btn-block btn-outline-warning" href="{% url 'dogs:dog_update' object.pk %}">
+            {% if user.is_superuser %}
+            Edit/Delete
+            {% elif object.owner == user or user.is_staff %}
+            Edit
+            {% endif %}
+        </a>
+        {% endif %}
+    </div>
+</div>
