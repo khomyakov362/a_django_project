@@ -9,6 +9,22 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="{% static 'css/album.css' %}" rel="stylesheet">
+    <style>
+        .aslink {
+            display: inline;
+            padding: 0 0 !important;
+            border: none;
+            background-color: transparent;
+        }
+        .aslink:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .text-white a, .aslink {
+            color: inherit
+        }
+    </style>
 </head>
 
 <body>
@@ -25,23 +41,26 @@
                 </div>
                 <div class="col-sm-4 offset-md-1 py-4">
                     <h4 class="text-white">Menu</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="{% url 'dogs:index' %}" class="text-white">Main</a></li>
-                        <li><a href="{% url 'dogs:breeds' %}" class="text-white">Breeds</a></li>
-                        <li><a href="{% url 'dogs:dogs_list' %}" class="text-white">Dogs</a></li>
-                        <li><a href="{% url 'dogs:dog_create' %}" class="text-white">Add a dog</a></li>
+                    <ul class="list-unstyled text-white"><div class="text-white">
+                        {% if user.is_superuser %}
+                        <li><a href="/admin">Admin View</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'dogs:index' %}">Main</a></li>
+                        <li><a href="{% url 'dogs:breeds' %}">Breeds</a></li>
+                        <li><a href="{% url 'dogs:dogs_list' %}">Dogs</a></li>
+                        <li><a href="{% url 'dogs:dog_create' %}">Add a dog</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'users:user_profile' %}" class="text-white">Profile</a></li>
-                            <li><span class="text-white"> {{user}} </span></li>
+                            <li><span style="color: rgba(255, 255, 255, 0.381);"> {{user}} </span></li>
                             <li>
                                 <form method="post" action="{% url 'users:user_logout' %}">
                                  {% csrf_token %}
-                                 <button type="submit" class="btn btn-danger btn-sm">Sign Out</button> 
+                                 <button type="submit" class="aslink">Sign Out</button> 
                                 </form>
                             </li>
                         {% else %}
-                            <li><a href="{% url 'users:user_login' %}" class="text-white">Sign In</a></li>
-                            <li><a href="{% url 'users:user_register' %}" class="text-white">Register</a></li>
+                            <li><a href="{% url 'users:user_login' %}">Sign In</a></li>
+                            <li><a href="{% url 'users:user_register' %}">Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
