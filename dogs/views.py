@@ -16,21 +16,27 @@ def index(request : HttpRequest):
 
     return render(request, 'dogs/index.html', context)
 
-def breeds_list(request : HttpRequest):
-    context = {
-        'objects_list' : Breed.objects.all(),
+class BreedListView(LoginRequiredMixin, ListView):
+    model = Breed
+    extra_context = {
         'title' : 'Shelter - All Our Breeds'
     }
-    return render(request, 'dogs/breeds.html', context)
+    template_name = 'dogs/breeds.html'
 
-def breed_dogs_list(request : HttpRequest, pk : int):
-    breed_item = Breed.objects.get(pk=pk)
-    context = {
-        'object_list' : Dog.objects.filter(breed_id=pk),
-        'title' : f'Dogs of {breed_item.name} breed',
-        'breed_pk' : breed_item.pk
-    }
-    return render(request, 'dogs/dogs.html', context)
+class DogBreedListView(LoginRequiredMixin, ListView):
+    model = Dog
+    template_name = 'dogs/dogs.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset().filter(breed_id=self.kwargs.get('pk'))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        pk = self.kwargs.get('pk')
+        breed = Breed.objects.get(pk=pk)
+        context_data['title'] = f'All dogs of breed {breed}'
+        return context_data
 
 class DogListView(ListView):
     model = Dog
@@ -57,9 +63,11 @@ class DogCreateView(LoginRequiredMixin, CreateView):
 class DogDetailView(LoginRequiredMixin, DetailView):
     model = Dog
     template_name = 'dogs/detail.html'
-    extra_context = {
-        'title' : 'Details'
-    }
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['title'] = f'Details on {self.object}'
+        return context_data
 
 class DogUpdateView(LoginRequiredMixin, UpdateView):
     model = Dog
