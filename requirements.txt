@@ -3,3 +3,4 @@ python-dotenv
 pyodbc
 Pillow
 Django
+redis
