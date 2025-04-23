@@ -1,12 +1,14 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpRequest, Http404
+from django.http import HttpRequest, Http404, HttpResponseForbidden
 from django.urls import reverse, reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from django.forms import inlineformset_factory
+from django.core.exceptions import PermissionDenied
 
 from dogs.models import Breed, Dog, DogParent
 from dogs.forms import DogForm, ParentForm
+from dogs.services import send_views_mail
 from users.models import UserRoles
 
 def index(request : HttpRequest):
@@ -75,6 +77,9 @@ class DogCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('dogs:dogs_list')
     
     def form_valid(self, form):
+        if self.request.user.role != UserRoles.USER:
+            raise PermissionDenied
+
         self.object = form.save()
         self.object.owner = self.request.user
         self.object.save()
@@ -86,7 +91,15 @@ class DogDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
+        object_ = self.get_object()
         context_data['title'] = f'Details on {self.object}'
+        dog_object_increase = get_object_or_404(Dog, pk=object_.pk)
+        if object_.owner != self.request.user:
+            dog_object_increase.views_count()
+        if object_.owner:
+            email = object_.owner.email
+            if dog_object_increase.views % 20 == 0 and dog_object_increase.views != 0:
+                send_views_mail(dog_object_increase.name, email, dog_object_increase.views)
         return context_data
 
 class DogUpdateView(LoginRequiredMixin, UpdateView):
@@ -102,8 +115,8 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self, queryset = None):
         self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_staff:
-            raise Http404
+        if self.object.owner != self.request.user and not self.request.user.role == UserRoles.ADMIN:
+            raise PermissionDenied
         return self.object
 
     def get_context_data(self, **kwargs):
@@ -126,19 +139,21 @@ class DogUpdateView(LoginRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 
-class DogDeleteView(LoginRequiredMixin, DeleteView):
+class DogDeleteView(PermissionRequiredMixin, DeleteView):
     model = Dog
     template_name = 'dogs/delete.html'
     extra_context = {
         'title' : 'Delete dog'
     }
     success_url = reverse_lazy('dogs:dogs_list')
+    permission_required = 'dogs.gelete_dog'
+    permission_denied_message = 'You don not have the right to perform then action.'
 
-    def get_object(self, queryset = None):
-        self.object = super().get_object(queryset)
-        if self.object.owner != self.request.user and not self.request.user.is_staff:
-            raise Http404
-        return self.object
+    # def get_object(self, queryset = None):
+    #     self.object = super().get_object(queryset)
+    #     if self.object.owner != self.request.user and not self.request.user.is_staff:
+    #         raise Http404
+    #     return self.object
 
 def toggle_activity(request : HttpRequest, pk : int):
     dog_item = get_object_or_404(Dog, pk=pk)

@@ -7,13 +7,14 @@ from users.forms import StyleFormMixin
 class DogForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Dog
-        exclude = ('owner', 'is_active')
+        exclude = ('owner', 'is_active', 'views')
     
     def clean_birth_date(self):
         cd = self.cleaned_data['birth_date']
-        now_year = datetime.datetime.now().year
-        if now_year - cd.year > 35:
-            raise forms.ValidationError('The dog must be younger than 35 years.')
+        if cd:
+            now_year = datetime.datetime.now().year
+            if now_year - cd.year > 35:
+                raise forms.ValidationError('The dog must be younger than 35 years.')
         return cd
 
 class ParentForm(StyleFormMixin, forms.ModelForm):

@@ -12,6 +12,7 @@
             <p class="text-muted">{{ object.owner.first_name|default:"-" }}</p>
             <p class="text-muted">Phone: {{ object.owner.phone|default:"-" }}</p>
             <p class="text-muted">Telegram: {{ object.owner.telegram|default:"-" }}</p>
+            <p class="text-muted">Views: {{ object.views }}</p>
         </div>
         <div class="card-footer">
             {% if user.is_staff or user == object.owner %}

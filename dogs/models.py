@@ -20,6 +20,7 @@ class Dog(models.Model):
     photo = models.ImageField(upload_to='dogs/', **NULLABLE, verbose_name='Photo')
     birth_date = models.DateField(**NULLABLE, verbose_name='Birth date')
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, **NULLABLE, verbose_name='Owner')
+    views = models.IntegerField(default=0, verbose_name='Views')
     is_active = models.BooleanField(default=True, verbose_name='Active')
 
     def __str__(self):
@@ -28,6 +29,10 @@ class Dog(models.Model):
     class Meta:
         verbose_name = 'dog'
         verbose_name_plural = 'dogs'
+    
+    def views_count(self):
+        self.views += 1
+        self.save()
 
 class DogParent(models.Model):
     dog = models.ForeignKey(Dog, on_delete=models.CASCADE)
