@@ -8,7 +8,7 @@
         <div class="card-body">
             <h5 class="card-title pricing-card-title">Breed: {{ object.breed }}</h5>
             <ul class="list-unstyled mb-4 text-start m-3">
-                <li>Birth Date: {{object.birt_hdate|default:'not stated'}} </li>
+                <li>Birth Date: {{object.birth_date|default:'not stated'}} </li>
             </ul>
         </div>
         <a class="btn btn-lg btn-block btn-outline-info" href="{% url 'dogs:dog_detail' object.pk %}">Details</a>

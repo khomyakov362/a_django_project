@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView
+from django.views.generic import CreateView, UpdateView, ListView
 
 from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserPasswordChangeForm
@@ -65,6 +65,18 @@ class UserPasswordChangeView(PasswordChangeView):
     form_class = UserPasswordChangeForm
     template_name = 'users/user_change_password.html'
     success_url = reverse_lazy('users:user_profile')
+
+class UserListView(ListView):
+    model = User
+    extra_context = {
+        'title' : 'All our users'
+    }
+    template_name = 'users/users.html'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_active=True)
+        return queryset
 
 @login_required
 def user_generate_new_password(request : HttpRequest):

@@ -17,6 +17,15 @@ class DogForm(StyleFormMixin, forms.ModelForm):
                 raise forms.ValidationError('The dog must be younger than 35 years.')
         return cd
 
+class DogAdminForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Dog
+        exclude = ('is_active',)
+    
+    def clean_birth_date(self):
+        return DogForm.clean_birth_date(self)
+
+
 class ParentForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = DogParent
