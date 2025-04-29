@@ -9,6 +9,7 @@ from redis.commands.search.querystring import querystring
 from reviews.models import Review
 from users.models import User
 from reviews.forms import ReviewForm
+from reviews.utils import slug_generator
 from users.models import UserRoles
 
 class ReviewListView(generic.ListView):
@@ -42,6 +43,19 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     extra_context = {
         'title' : 'Write a review'
     }
+
+    def form_valid(self, form):
+        if self.request.user.role not in (UserRoles.USER, UserRoles.ADMIN):
+            return HttpResponseForbidden()
+        self.object = form.save()
+        print(self.object.slug)
+        if self.object.slug == 'temp_slug':
+            self.object.slug = slug_generator()
+            print(self.object.slug)
+        self.object.author = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
 
 class ReviewDetailView(LoginRequiredMixin, generic.DetailView):
     model = Review
