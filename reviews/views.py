@@ -74,3 +74,12 @@ class ReviewDeleteView(PermissionRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         return reverse('reviews:reviews_list')
+
+def review_toggle_activity(request, slug):
+    review_item = get_object_or_404(Review, slug=slug)
+    review_item.sign_of_review = not review_item.sign_of_review
+    review_item.save()
+    if not review_item.sign_of_review:
+        return redirect(reverse('reviews:reviews_deactivated_list'))
+    else:
+        return redirect(reverse('reviews:reviews_list'))
