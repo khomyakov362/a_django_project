@@ -8,8 +8,9 @@
         {% include 'dogs/includes/inc_dog_card.html' with object=object %}
         {% endfor %}
     </div>
-    <a class="btn btn-outline-success m-2" href="{% url 'dogs:dogs_list' %}">Active dogs</a>
-    <a class="btn btn-outline-secondary m-2" href="{% url 'dogs:dogs_deactivated_list' %}">Non-Active dogs</a>
+    <a class="btn btn-outline-primary m-2 float-left" href="{% url 'dogs:dog_create' %}">Create dog</a>
+    <a class="btn btn-outline-secondary m-2 float-right" href="{% url 'dogs:dogs_deactivated_list' %}">Non-Active dogs</a>
+    <a class="btn btn-outline-success m-2 float-right" href="{% url 'dogs:dogs_list' %}">Active dogs</a>
 </div>
 
 {% endblock %}

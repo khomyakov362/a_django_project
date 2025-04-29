@@ -48,7 +48,7 @@
                         <li><a href="{% url 'dogs:index' %}">Main</a></li>
                         <li><a href="{% url 'dogs:breeds' %}">Breeds</a></li>
                         <li><a href="{% url 'dogs:dogs_list' %}">Dogs</a></li>
-                        <li><a href="{% url 'dogs:dog_create' %}">Add a dog</a></li>
+                        <li><a href="{% url 'reviews:review_list' %}">Reviews</a></li>
                         {% if user.is_authenticated %}
                             <li><a href="{% url 'users:user_list' %}" class="text-white">All Users</a></li>
                             <li><a href="{% url 'users:user_profile' %}" class="text-white">Profile</a></li>
