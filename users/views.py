@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout, update_session_auth
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib import messages
-from django.views.generic import CreateView, UpdateView, ListView
+from django.views.generic import CreateView, UpdateView, ListView, DetailView
 
 from users.models import User
 from users.forms import UserRegisterForm, UserLoginForm, UserForm, UserUpdateForm, UserPasswordChangeForm
@@ -77,6 +77,16 @@ class UserListView(ListView):
         queryset = super().get_queryset()
         queryset = queryset.filter(is_active=True)
         return queryset
+
+class UserDetailView(DetailView):
+    model = User
+    template_name = 'users/user_detail_view.html'
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        user_obj = self.get_object()
+        context_data['title'] = f'Prifile of user {user_obj}'
+        return context_data
 
 @login_required
 def user_generate_new_password(request : HttpRequest):

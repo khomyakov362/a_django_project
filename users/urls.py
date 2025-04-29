@@ -14,5 +14,6 @@ urlpatterns = [
     path('change_password/', views.UserPasswordChangeView.as_view(), name='user_change_password'),
     path('profile/genpassword/', views.user_generate_new_password, name='user_generate_new_password'),
     # looking at other users
-    path('all_users/', views.UserListView.as_view(), name='user_list')
+    path('all_users/', views.UserListView.as_view(), name='user_list'),
+    path('profile/<int:pk>/', views.UserDetailView.as_view(), name='user_detail')
 ]
