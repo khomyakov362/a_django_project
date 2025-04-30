@@ -39,7 +39,7 @@ class ReviewDeactivatedListView(generic.ListView):
 class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
     model = Review
     form_class = ReviewForm
-    template_name = 'reviews/create.html'
+    template_name = 'reviews/create_edit.html'
     extra_context = {
         'title' : 'Write a review'
     }
@@ -56,6 +56,8 @@ class ReviewCreateView(LoginRequiredMixin, generic.CreateView):
         self.object.save()
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse('reviews:review_list')       
 
 class ReviewDetailView(LoginRequiredMixin, generic.DetailView):
     model = Review
@@ -67,13 +69,13 @@ class ReviewDetailView(LoginRequiredMixin, generic.DetailView):
 class ReviewUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Review
     form_class = ReviewForm
-    template_name = 'reviews/update.html'
+    template_name = 'reviews/create_edit.html'
     extra_context = {
         'title' : 'Edit review'
     }
 
     def get_success_url(self):
-        return reverse('reviews:review_detail')
+        return reverse('reviews:review_detail', args=(self.kwargs.get('slug'),))
     
     def get_object(self, queryset = None):
         self.object = super().get_object(queryset=queryset)
@@ -87,13 +89,13 @@ class ReviewDeleteView(PermissionRequiredMixin, generic.DeleteView):
     permission_required = 'reviews.delete_review'
 
     def get_success_url(self):
-        return reverse('reviews:reviews_list')
+        return reverse('reviews:review_list')
 
 def review_toggle_activity(request, slug):
     review_item = get_object_or_404(Review, slug=slug)
     review_item.sign_of_review = not review_item.sign_of_review
     review_item.save()
     if not review_item.sign_of_review:
-        return redirect(reverse('reviews:reviews_deactivated_list'))
+        return redirect(reverse('reviews:review_deactivated_list'))
     else:
-        return redirect(reverse('reviews:reviews_list'))
+        return redirect(reverse('reviews:review_list'))
