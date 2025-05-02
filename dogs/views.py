@@ -21,6 +21,7 @@ def index(request : HttpRequest):
 
 class BreedListView(LoginRequiredMixin, ListView):
     model = Breed
+    paginate_by = 3
     extra_context = {
         'title' : 'Shelter - All Our Breeds'
     }
@@ -47,6 +48,7 @@ class DogListView(ListView):
         'title' : 'Shelter - All Our Dogs'
     }
     template_name = 'dogs/dogs.html' 
+    paginate_by = 3
 
     def get_queryset(self):
         queryset = super().get_queryset()

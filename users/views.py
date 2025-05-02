@@ -72,6 +72,7 @@ class UserListView(ListView):
         'title' : 'All our users'
     }
     template_name = 'users/users.html'
+    paginate_by = 3
 
     def get_queryset(self):
         queryset = super().get_queryset()
