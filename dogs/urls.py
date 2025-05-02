@@ -11,6 +11,7 @@ urlpatterns = [
     path('breeds/<int:pk>/dogs/', views.DogBreedListView.as_view(), name='breed_dogs'),
     path('dogs/', views.DogListView.as_view(), name='dogs_list'),
     path('dogs/deactivated', views.DogDeactivatedListView.as_view(), name='dogs_deactivated_list'),
+    path('dogs/search/', views.DogSearchListView.as_view(), name='dog_search'), 
     path('dogs/create_update/', views.DogCreateView.as_view(), name='dog_create'),
     path('dogs/detail/<int:pk>/', views.DogDetailView.as_view(), name='dog_detail'),
     path('dogs/create_update/<int:pk>/', views.DogUpdateView.as_view(), name='dog_update'),
